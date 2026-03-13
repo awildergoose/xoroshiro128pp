@@ -1,3 +1,5 @@
+//! This module provide expected values for the tests.
+//! These expected values were extracted from a running Minecraft instance.
 #![allow(clippy::unreadable_literal)]
 
 pub const EXPECTED_1_0_LONG: [i64; 100] = [

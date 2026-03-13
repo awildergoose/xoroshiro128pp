@@ -10,8 +10,8 @@ This library is _fully_ compatible with no_std, no need to set any feature flags
 
 ```rs
 let mut rng = Xoroshiro128PP::from_seed(1234567890);
-// or manually assign the lo and hi values
-rng = Xoroshiro128PP::new(1234, 5678); // lo, hi
+// or manually assign the low and high values
+rng = Xoroshiro128PP::new(1234, 5678); // low, high
 
 rng.next_int(); // 0..i32::MAX
 rng.next_int_bounded(10); // 0..10

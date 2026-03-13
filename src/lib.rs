@@ -1,13 +1,20 @@
-#![allow(clippy::missing_panics_doc)]
+//! Minecraft: Java Edition's `Xoroshiro128++` random source implementation in Rust.
+//! Fully `no_std` compatible, Mimics `net.minecraft.world.level.levelgen.Xoroshiro128++`
+//! and `net.minecraft.world.level.levelgen.XoroshiroRandomSource`.
 #![no_std]
 
+/// A Xoroshiro128++ random source.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub struct Xoroshiro128PP {
+    /// The lower 64 bits.
     pub seed_lo: i64,
+    /// The higher 64 bits.
     pub seed_hi: i64,
 }
 
 impl Xoroshiro128PP {
+    /// Creates a new Xoroshiro128++ random source from low and high values.
+    /// You're probably looking to use `from_seed` instead of this.
     #[must_use]
     pub const fn new(seed_lo: i64, seed_hi: i64) -> Self {
         let mut lo = seed_lo;
@@ -24,6 +31,8 @@ impl Xoroshiro128PP {
         }
     }
 
+    /// Creates a new Xoroshiro128++ random source from a seed.
+    /// This applies `MixStafford13` to the seed to get the low and high values.
     #[must_use]
     pub const fn from_seed(seed: i64) -> Self {
         let mut this = Self::new(0, 0);
@@ -31,6 +40,7 @@ impl Xoroshiro128PP {
         this
     }
 
+    /// Overwrites the seed of this Xoroshiro128++ source to `seed`.
     pub const fn set_seed(&mut self, seed: i64) {
         const fn mix_stafford_13(l: i64) -> i64 {
             let mut value = l;
@@ -53,6 +63,7 @@ impl Xoroshiro128PP {
         self.seed_hi = hi;
     }
 
+    /// Retrieves the next [`i64`]
     #[must_use]
     pub const fn next_long(&mut self) -> i64 {
         let lo = self.seed_lo;
@@ -64,12 +75,18 @@ impl Xoroshiro128PP {
         result
     }
 
+    /// Retrieves the next [`i32`]
     #[must_use]
     #[allow(clippy::cast_possible_truncation)]
     pub const fn next_int(&mut self) -> i32 {
         self.next_long() as i32
     }
 
+    /// Retrieves the next [`i32`] from `0..bound`
+    ///
+    /// # Panics
+    ///
+    /// Panics if `bound == 0`
     #[must_use]
     pub fn next_int_bounded(&mut self, bound: u32) -> i32 {
         assert!(bound > 0, "Bound must be positive");
@@ -92,27 +109,37 @@ impl Xoroshiro128PP {
         result as i32
     }
 
+    /// Retrieves the next [`i32`] from `origin..bound`
+    ///
+    /// # Panics
+    ///
+    /// Panics if `origin >= bound`
+    #[must_use]
     pub fn next_int_bounded_with_origin(&mut self, origin: i32, bound: i32) -> i32 {
         assert!(origin < bound, "bound - origin is not positive");
         origin + self.next_int_bounded((bound - origin).try_into().unwrap())
     }
 
+    /// Retrieves the next `i` bits as a [`u64`].
     #[must_use]
     pub const fn next_bits(&mut self, i: i64) -> u64 {
         self.next_long().cast_unsigned() >> (64 - i)
     }
 
+    /// Retrieves the next [`bool`]
     #[must_use]
     pub const fn next_bool(&mut self) -> bool {
         self.next_long() & 1 != 0
     }
 
+    /// Retrieves the next [`f32`]
     #[must_use]
     #[allow(clippy::cast_precision_loss)]
     pub const fn next_float(&mut self) -> f32 {
         self.next_bits(24) as f32 * 1.0 / (1u32 << 24) as f32
     }
 
+    /// Retrieves the next [`f64`]
     #[must_use]
     #[allow(clippy::cast_precision_loss)]
     pub const fn next_double(&mut self) -> f64 {
