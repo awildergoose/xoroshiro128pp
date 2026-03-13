@@ -6,7 +6,7 @@ This library mimics Minecraft: Java Edition's Xoroshiro128++ implementation, der
 
 This library is _fully_ compatible with no_std, no need to set any feature flags at all.
 
-## Example
+## Usage
 
 ```rs
 let mut rng = Xoroshiro128PP::from_seed(1234567890);

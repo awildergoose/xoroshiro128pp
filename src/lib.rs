@@ -243,6 +243,5 @@ mod tests {
         let x = Xoroshiro128PP::from_seed(1);
         assert_eq!(x.seed_hi, 1_927_618_558_350_093_866);
         assert_eq!(x.seed_lo, 5_272_463_233_947_570_727);
-        panic!("x = {x:?}");
     }
 }
