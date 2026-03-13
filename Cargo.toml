@@ -1,6 +1,6 @@
 [package]
 name = "xoroshiro128pp"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 
 description = "Minecraft: Java Edition's Xoroshiro128++ random source implementation in Rust."
@@ -8,6 +8,7 @@ documentation = "https://docs.rs/xoroshiro128pp"
 homepage = "https://github.com/awildergoose/xoroshiro128pp"
 repository = "https://github.com/awildergoose/xoroshiro128pp"
 license = "MIT"
-license-file = "LICENSE"
+keywords = ["random", "rng", "minecraft"]
+categories = ["algorithms", "no-std"]
 
 [dependencies]
