@@ -1,6 +1,7 @@
 #![allow(clippy::missing_panics_doc)]
 #![no_std]
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub struct Xoroshiro128PP {
     pub seed_lo: i64,
     pub seed_hi: i64,
@@ -215,5 +216,6 @@ mod tests {
         let x = Xoroshiro128PP::from_seed(1);
         assert_eq!(x.seed_hi, 1_927_618_558_350_093_866);
         assert_eq!(x.seed_lo, 5_272_463_233_947_570_727);
+        panic!("x = {x:?}");
     }
 }
