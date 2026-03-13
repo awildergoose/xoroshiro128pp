@@ -44,11 +44,13 @@ impl Xoroshiro128PP {
     pub const fn set_seed(&mut self, seed: i64) {
         const fn mix_stafford_13(l: i64) -> i64 {
             let mut value = l;
-            value = (value ^ (value.cast_unsigned() >> 30).cast_signed())
+            value = (value.cast_unsigned() ^ (value.cast_unsigned() >> 30))
+                .cast_signed()
                 .wrapping_mul(-4_658_895_280_553_007_687);
-            value = (value ^ (value.cast_unsigned() >> 27).cast_signed())
+            value = (value.cast_unsigned() ^ (value.cast_unsigned() >> 27))
+                .cast_signed()
                 .wrapping_mul(-7_723_592_293_110_705_685);
-            value ^ value >> 31
+            (value.cast_unsigned() ^ (value.cast_unsigned() >> 31)).cast_signed()
         }
 
         // unmixed result
@@ -241,7 +243,19 @@ mod tests {
     #[test]
     fn test_seed() {
         let x = Xoroshiro128PP::from_seed(1);
-        assert_eq!(x.seed_hi, 1_927_618_558_350_093_866);
         assert_eq!(x.seed_lo, 5_272_463_233_947_570_727);
+        assert_eq!(x.seed_hi, 1_927_618_558_350_093_866);
+
+        let x = Xoroshiro128PP::from_seed(-1);
+        assert_eq!(x.seed_lo, -110_783_831_392_733_308);
+        assert_eq!(x.seed_hi, 2_932_223_646_667_407_290);
+
+        let x = Xoroshiro128PP::from_seed(-9_999_999_999_999);
+        assert_eq!(x.seed_lo, -4_938_218_088_816_443_374);
+        assert_eq!(x.seed_hi, -7_729_084_113_981_795_483);
+
+        let x = Xoroshiro128PP::from_seed(9_999_999_999_999);
+        assert_eq!(x.seed_lo, -5_471_333_472_048_166_899);
+        assert_eq!(x.seed_hi, 7_349_926_192_333_131_484);
     }
 }
